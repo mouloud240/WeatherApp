@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -48,17 +49,19 @@ class Weather {
             hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
 
         cityName = inputValue;
-        print(result);
+
         for (var i = 0; i < 7; i++) {
           if (DateTime.parse(result['list'][i]["dt_txt"]).compareTo(now) < 0) {
-            temperature.add(result['list'][i]['main']['temp']);
+            temperature.add((result['list'][i]['main']['temp']));
             icons.add(result['list'][i]['weather'][0]['icon']);
             description.add(result['list'][i]['weather'][0]['description']);
           }
         }
-       
+
         day = DateFormat('EEEE').format(date);
       }
+      ;
+     
     }
   }
 }
