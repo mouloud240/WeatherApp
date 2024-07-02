@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class homePage extends StatelessWidget {
   const homePage({super.key});
@@ -7,17 +9,66 @@ class homePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF003366),
-            Color(0xFF663399),
-            Color(0xFFFF00FF),
+        body: SizedBox.expand(
+      child: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+                height: 350,
+                width: 350,
+                child: Image.asset("assets/weatherLogo.png")),
+            Column(
+              children: [
+                Text(
+                  "Weather",
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      textStyle: TextStyle(color: Colors.white, fontSize: 53)),
+                ),
+                Text(
+                  "ForeCast",
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w500,
+                      textStyle:
+                          TextStyle(color: Color(0xffDDB130), fontSize: 50)),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 25,
+            ),
+            SizedBox(
+              width: 304,
+              height: 72,
+              child: ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          WidgetStatePropertyAll(Color(0xffDDB130))),
+                  onPressed: () => {Navigator.of(context).pushNamed("oneday")},
+                  child: Text(
+                    "Get start",
+                    style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 30),
+                        color: Color(0xff362A84)),
+                  )),
+            )
           ],
-          stops: [0.1, 0.9, 1.0],
+        ),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/bg.png'), fit: BoxFit.fill),
+          // gradient: LinearGradient
+          //   begin: Alignment.topCenter,
+          //   end: Alignment.bottomCenter,
+          //   colors: [
+          //     Color(0xFF003366),
+          //     Color(0xFF663399),
+          //     Color(0xFFFF00FF),
+          //   ],
+          //   stops: [0.1, 0.9, 1.0],
+          // ),
         ),
       ),
     ));
