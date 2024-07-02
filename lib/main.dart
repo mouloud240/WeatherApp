@@ -15,7 +15,7 @@ class myApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const homePage(),
-      initialRoute: '/',
+      initialRoute: 'oneday',
       routes: {
         "oneday": (context) => Onedaypage(),
         "5dayforecast": (context) => daysForecast()
