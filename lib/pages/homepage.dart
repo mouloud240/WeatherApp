@@ -7,12 +7,19 @@ class homePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-            gradient: RadialGradient(
-                colors: [Color(0xffF7CBFD), Color(0xff7758D1)],
-                center: Alignment.bottomCenter)),
+        body: Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFF003366),
+            Color(0xFF663399),
+            Color(0xFFFF00FF),
+          ],
+          stops: [0.1, 0.9, 1.0],
+        ),
       ),
-    );
+    ));
   }
 }
