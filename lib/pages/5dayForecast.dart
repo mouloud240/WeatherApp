@@ -12,6 +12,6 @@ class daysForecast extends StatelessWidget {
             image: DecorationImage(
                 image: AssetImage("assets/bg.png"), fit: BoxFit.fill)),
       ),
-    )
+    );
   }
 }
