@@ -21,7 +21,8 @@ class _OnedaypageState extends State<Onedaypage> {
   }
 
   Future<void> fetchWeather() async {
-    await now.initWeather();
+    String? json = await now.fetchWeatherData(now.inputValue);
+    now.initWeather(json, now.date);
     setState(() {
       isLoading = false;
     });
@@ -49,7 +50,9 @@ class _OnedaypageState extends State<Onedaypage> {
                       width: 350,
                     ),
                     Text(
-                      ((now.temperature[0] - 272.15).round()).toString() + '°',
+                      ((now.DayData[0].temperature - 272.15).round())
+                              .toString() +
+                          '°',
                       style: GoogleFonts.poppins(
                           textStyle: TextStyle(
                               color: Colors.white,
