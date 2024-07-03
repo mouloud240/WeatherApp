@@ -27,14 +27,9 @@ class _OnedaypageState extends State<Onedaypage> {
 
   Future<void> fetchWeather() async {
     try {
-      if (_inputValue == "London") {
-        // Fetch weather by city name
-        await now.initWeather(_inputValue);
-      } else {
-        // Fetch weather by coordinates
-        String? json = await now.fetchWeatherData(now.inputValue);
-        now.initWeather(json, now.date);
-      }
+      // Ensure you're fetching based on the latest logic or conditions
+      String? json = await now.fetchWeatherData(_inputValue); // Assuming this is the latest logic
+      now.initWeather(json, now.date);
       setState(() {
         isLoading = false;
       });
@@ -46,8 +41,28 @@ class _OnedaypageState extends State<Onedaypage> {
   }
 
   Future<Position> _determinePosition() async {
-    // Permission checks and getting current location
-    // Remain unchanged from your original implementation
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    return await Geolocator.getCurrentPosition();
   }
 
   @override
@@ -136,65 +151,68 @@ class _OnedaypageState extends State<Onedaypage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               ElevatedButton(
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Colors.transparent),
-                                      elevation: MaterialStateProperty.all(
-                                          double.parse('0'))),
-                                  onPressed: () async {
-                                    _currentLocation =
-                                        await _determinePosition();
-                                    final placemarks =
-                                        await placemarkFromCoordinates(
-                                      _currentLocation.latitude,
-                                      _currentLocation.longitude,
-                                    );
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.transparent),
+                                  elevation:
+                                      MaterialStateProperty.all<double>(0),
+                                ),
+                                onPressed: () async {
+                                  _currentLocation = await _determinePosition();
+                                  final placemarks = await placemarkFromCoordinates(
+                                    _currentLocation.latitude,
+                                    _currentLocation.longitude,
+                                  );
 
-                                    setState(() {
-                                      _inputValue = placemarks.isNotEmpty
-                                          ? placemarks[0].administrativeArea ??
-                                              "Unknown"
-                                          : "Unknown";
-                                    });
+                                  setState(() {
+                                    _inputValue = placemarks.isNotEmpty
+                                        ? placemarks[0].administrativeArea ??
+                                            "Unknown"
+                                        : "Unknown";
+                                  });
 
-                                    // Update weather for the new location
-                                    fetchWeather();
-                                  },
-                                  child: Icon(
-                                    Icons.location_on_outlined,
-                                    color: Colors.white,
-                                    size: 45,
-                                  )),
+                                  // Update weather for the new location
+                                  fetchWeather();
+                                },
+                                child: Icon(
+                                  Icons.location_on_outlined,
+                                  color: Colors.white,
+                                  size: 45,
+                                ),
+                              ),
                               ElevatedButton(
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Colors.transparent),
-                                      elevation: MaterialStateProperty.all(
-                                          double.parse('0'))),
-                                  onPressed: () {},
-                                  child: Icon(
-                                    Icons.add,
-                                    color: Colors.white,
-                                    size: 45,
-                                  )),
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.transparent),
+                                  elevation:
+                                      MaterialStateProperty.all<double>(0),
+                                ),
+                                onPressed: () {},
+                                child: Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                  size: 45,
+                                ),
+                              ),
                               ElevatedButton(
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Colors.transparent),
-                                      elevation: MaterialStateProperty.all(
-                                          double.parse('0'))),
-                                  onPressed: () {
-                                    Navigator.of(context)
-                                        .pushNamed('5dayforecast');
-                                  },
-                                  child: Icon(
-                                    Icons.menu,
-                                    color: Colors.white,
-                                    size: 45,
-                                  )),
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.transparent),
+                                  elevation:
+                                      MaterialStateProperty.all<double>(0),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pushNamed('5dayforecast');
+                                },
+                                child: Icon(
+                                  Icons.menu,
+                                  color: Colors.white,
+                                  size: 45,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -206,20 +224,21 @@ class _OnedaypageState extends State<Onedaypage> {
                         width: 410,
                         child: Container(
                           child: ListView.builder(
-                              itemCount: now.DayData.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Weather_icon(
-                                  temp: (now.DayData[index].temperature -
-                                          272.15)
-                                      .round()
-                                      .toString(),
-                                  time: "13:00",
-                                  icon: "assets/weatherLogo.png",
-                                );
-                              }),
+                            itemCount: now.DayData.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Weather_icon(
+                                temp: (now.DayData[index].temperature - 272.15)
+                                    .round()
+                                    .toString(),
+                                time: "13:00",
+                                icon: "assets/weatherLogo.png",
+                              );
+                            },
+                          ),
                           decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(20)),
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                         ),
                       ),
                     ),
@@ -235,6 +254,7 @@ class Weather_icon extends StatelessWidget {
   final String temp;
   final String icon;
   final String time;
+
   Weather_icon({
     Key? key,
     required this.temp,
@@ -249,10 +269,12 @@ class Weather_icon extends StatelessWidget {
         Text(
           this.temp + "°" + "c",
           style: GoogleFonts.poppins(
-              textStyle: TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w500)),
+            textStyle: TextStyle(
+              color: Colors.white,
+              fontSize: 28,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ),
         Image.asset(
           icon,
@@ -262,11 +284,13 @@ class Weather_icon extends StatelessWidget {
         Text(
           time,
           style: GoogleFonts.poppins(
-              textStyle: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white)),
-        )
+            textStyle: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+        ),
       ],
     );
   }
